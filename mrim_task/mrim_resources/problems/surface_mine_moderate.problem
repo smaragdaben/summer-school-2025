@@ -1,0 +1,53 @@
+NAME: Surface Mine with a moderate number of inspection points (two robots)
+COMMENT: Surface Mine problem for MRS UAV Summer School 2025
+
+# ID X Y Z HEADING
+ROBOTS_START
+1 12.5 18.0 3.0 -1.57
+2 -10.5 -8.5 3.0 -1.57
+ROBOTS_END
+
+# ID X Y Z HEADING TILT TYPE INSPECTABILITY offset (-27, 0, 0)
+INSPECTION_POINTS_START
+# truck 
+1 31.0 13.5 2.0 -0.78 0.78 t 2
+ 
+# mining vehicle
+2 25.0 0.0 -2.5 0.0 0.78 t 1 2
+3 23 0.0 -1.7 3.14 0.78 t 1 2
+ 
+# barn
+4 -8.0 -19.0 2.2 -2.35 0.78 t 1 2
+ 
+# mine 1
+5 21.5 10.5 -0.2 -0.78 0.78 t 2 # blue
+6 10.0 7.5 -0.2 -0.78 0.0 s 1 # red
+ 
+ 
+# trees
+7 4.5 -19 2.2 1.57 0.78 t 1 2
+8 10.0 -10.5 2.2 -1.57 0.78 t 1 2
+ 
+# mountains
+9 -18.5 15.0 4.6 0.0 1.57 t 2
+10 -23.0 -15.0 2.6 0.0 0.0 s 1
+11 -20.0 -5.0 3.6 0.78 1.57 t 1 2
+ 
+# ramp
+12 7.0 -3.5 0.5 1.57 0.78 t 1 2
+ 
+# abandoned car
+13 -4.0 14.5 2.0 0.0 0.78 t 1 2
+
+# Mine 2
+14 25.0 -10.0 -3.5 -2.35 0.0 s 1 
+15 19.0 -18.0 0.2 2.35 0.78 t 1 2
+16 32.0 2.0 0.0 -0.78 0.78 t 1 2
+
+INSPECTION_POINTS_END
+
+OBSTACLE_POINTS: surface_mine.asc
+WORLD: surface_mine.yaml
+MODEL: surface_mine.stl
+
+EOF

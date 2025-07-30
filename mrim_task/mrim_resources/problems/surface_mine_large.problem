@@ -1,0 +1,63 @@
+NAME: Surface Mine with a large number of inspection points (two robots)
+COMMENT: Surface Mine problem for MRS UAV Summer School 2025
+
+# ID X Y Z HEADING
+ROBOTS_START
+1 33.0 19.0 2.0 -1.57
+2 -19.0 -22.0 3.0 -1.57
+ROBOTS_END
+
+# ID X Y Z HEADING TILT TYPE INSPECTABILITY offset (-27, 0, 0)
+INSPECTION_POINTS_START
+
+# truck 
+1 30.0 15.0 0.5 0.3 0.78 t 1 2
+2 30.0 16.2 0.5 1.35 0.78 t 2
+
+# mining vehicle
+3 25.0 0.0 -2.5 0.0 0.78 t 1 2
+4 23 0.0 -1.7 3.14 0.78 t 1 2
+
+# barn
+5 -3.0 -16.5 1.2 0.78 0.78 t 1 2
+6 -7.0 -19.0 1.2 -2.35 0.78 t 1 2
+
+# mine 
+7 16.5 13.5 -0.2 -0.78 0.78 t 1 2 
+8 13.0 3.5 -0.2 0.78 0.78 t 1 2 
+9 30.0 -17.0 -0.5 2.35 0.78 t 2
+10 34.0 4.5 -0.5 -2.35 0.78 t 1 2
+#11 23.0 -15.5 -4.0 0.78 0.78 t 1 2
+11 7.5 13.5 -0.5 -0.78 0.78 t 1 2
+12 18.0 -7.5 -2.0 0.78 0.78 t 1 2
+13 7.0 -6.0 -0.5 0.78 0.78 t 1 2
+14 27.0 6.0 -0.5 -0.78 0.78 t 1 2
+15 27.5 -5.7 -3.0 0.78 0.0 s 1
+16 16.0 -16.0 0.5 2.35 0.78 t 1 2
+
+# field
+17 -14.0 -3.0 1.5 -0.78 0.0 s 1
+18 -3.0 2.5 2.6 1.57 0.78 t 1 2
+19 -4.0 -1.0 1.6 -1.57 0.78 t 1 2
+
+## abandoned car
+20 20.5 21.0 1.0 0.0 0.78 t 1 2
+21 -7.5 17.0 1.0 2.35 0.78 t 1 2
+22 10.5 21.0 1.0 0.0 0.78 t 1 2
+#23  -4.5 19.0 1.0 1.57 0.78 t 1 2
+
+## mountains
+23 -16.0 -10.0 1.6 -0.78 0.78 t 1 2
+24 -20.0 8.0 2.6 0.78 0.78 t 1 2
+25 -20.0 14.0 2.6 0.78 0.78 t 1 2
+26 -18.5 22.0 2.5 0.0 0.78 t 1 2
+27 -26.0 -18.0 2.6 0.78 0.78 t 1 2 
+28 -29.0 -7.0 3.0 -0.78 1.57 t 2
+
+INSPECTION_POINTS_END
+
+OBSTACLE_POINTS: surface_mine.asc
+WORLD: surface_mine.yaml
+MODEL: surface_mine.stl
+
+EOF
