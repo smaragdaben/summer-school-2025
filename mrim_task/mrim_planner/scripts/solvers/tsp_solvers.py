@@ -16,6 +16,7 @@ from path_planners.grid_based.astar   import AStar
 from path_planners.sampling_based.rrt import RRT
 
 from solvers.LKHInvoker import LKHInvoker
+from sklearn.cluster import KMeans
 
 class TSPSolver3D():
 
@@ -269,15 +270,32 @@ class TSPSolver3D():
         if method == 'kmeans':
             # Prepare positions of the viewpoints in the world
             positions = np.array([vp.pose.point.asList() for vp in viewpoints])
+ 
+            # Perform KMeans clustering
+            model = KMeans(n_clusters=k, random_state=0, n_init=10)
 
-            raise NotImplementedError('[STUDENTS TODO] KMeans clustering of viewpoints not implemented. You have to finish it on your own')
+            clusters = model.fit_predict(positions)
+            labels = model.labels_
+            centroids = model.cluster_centers_
+            # assign clusters taking into account the initial positions of the drones and the cluster centroids
+            print(problem.start_poses[0].position)
+            initial_drone_positions = np.array([[problem.start_poses[r].position.x, problem.start_poses[r].position.y, problem.start_poses[r].position.z] for r in range(k)])
+            new_labels = np.zeros_like(labels)
+            for r in range(k):
+                # Find the closest centroid to the initial drone position of drone k
+                distances = np.linalg.norm(centroids - initial_drone_positions[r], axis=1)
+                closest_centroid = np.argmin(distances)
+                # assign all viewpoints in the cluster to the new cluster label which is equal to the drone id
+                new_labels[labels == closest_centroid] = r
+
+
             # Tips:
             #  - utilize sklearn.cluster.KMeans implementation (https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
             #  - after finding the labels, you may want to swap the classes (e.g., by looking at the distance of the UAVs from the cluster centers)
             #  - Find the start poses of the UAVs in problem.start_poses[r].position.{x,y,z}
 
             # [STUDENTS TODO]: fill 1D list 'labels' of size len(viewpoints) with indices of the robots
-            labels = [randint(0, k - 1) for vp in viewpoints]
+            labels = new_labels.tolist()
 
         ## | -------------------- Random clustering ------------------- |
         else:
