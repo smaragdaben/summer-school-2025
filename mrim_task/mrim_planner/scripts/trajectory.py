@@ -638,7 +638,7 @@ class TrajectoryUtils():
         ## |  [COLLISION AVOIDANCE METHOD #2]: Delay UAV with shorter trajectory at start until there is no collision occurring  |
         elif method == 'delay_till_no_collisions_occur':
 
-            raise NotImplementedError('[STUDENTS TODO] Collision prevention method \'delay_till_no_collisions_occur\' not finished. You have to finish it on your own.')
+            # raise NotImplementedError('[STUDENTS TODO] Collision prevention method \'delay_till_no_collisions_occur\' not finished. You have to finish it on your own.')
             # Tips:
             #  - you might select which trajectory it is better to delay
             #  - the smallest delay step is the sampling step stored in variable 'self.dT'
@@ -650,9 +650,13 @@ class TrajectoryUtils():
             # Decide which UAV should be delayed
             # [STUDENTS TODO] CHANGE BELOW
             delay_robot_idx, nondelay_robot_idx = 0, 1
-
+            if traj_times[0] < traj_times[1]:
+                delay_robot_idx, nondelay_robot_idx = 1, 0
+            
+            print("[COLLISION AVOIDANCE] delaying UAV {:d} with trajectory time {:.1f} s".format(delay_robot_idx, traj_times[delay_robot_idx]))
+            
             # TIP: use function `self.trajectoriesCollide()` to check if two trajectories are in collision
-            collision_flag, collision_idx = ...
+            collision_flag, collision_idx = self.trajectoriesCollide(trajectories[delay_robot_idx], trajectories[nondelay_robot_idx], safety_distance)
 
             while collision_flag:
 
@@ -660,9 +664,10 @@ class TrajectoryUtils():
                 delay_t += delay_step
 
                 # [STUDENTS TODO] use function `trajectory.delayStart(X)` to delay a UAV at the start location by X seconds
+                trajectories[delay_robot_idx].delayStart(delay_t)
 
                 # keep checking if the robot trajectories collide
-                collision_flag, _ = ...
+                collision_flag, _ = self.trajectoriesCollide(trajectories[delay_robot_idx], trajectories[nondelay_robot_idx], safety_distance)
 
         # # #}
 
