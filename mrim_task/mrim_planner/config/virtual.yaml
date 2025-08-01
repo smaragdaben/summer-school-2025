@@ -11,7 +11,7 @@ tsp:
 path_planner:
   timeout: 60.0              # (s) timeout for single start-to-goal planning
   method: 'rrt'              # [STUDENTS TODO: implement better method than the default] Method for generating start-to-goal paths: [euclidean, astar, rrt (default), rrtstar]
-  straighten_paths: false    # [STUDENTS TODO: implement better method than the default] Path straightening flag (default: false)
+  straighten_paths: true    # [STUDENTS TODO: implement better method than the default] Path straightening flag (default: false)
 
   # RRT and RRT* method parameters
   rrt:
@@ -29,8 +29,8 @@ path_planner:
 
 # Parameters for path smoothing
 path_smoothing:
-  sampling_step: 1.0  # (m) If horizontal constraints are not satisfied, TOPPRA might have returned infeasible trajectory due to too small sampling step
-  lookahead_dist: 3.0 # (m) STUDENTS TODO: find optimal value than the default] Lookahead distance for path smoothing (default: 1.0 m) 
+  sampling_step: 0.25  # (m) If horizontal constraints are not satisfied, TOPPRA might have returned infeasible trajectory due to too small sampling step
+  lookahead_dist: 0.5 # (m) STUDENTS TODO: find optimal value than the default] Lookahead distance for path smoothing (default: 1.0 m) 
 
 # Parameters for sampling the UAVs' trajectories [TIP: do path straightening before attempting parametrization]
 trajectory_sampling:
