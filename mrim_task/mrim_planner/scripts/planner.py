@@ -96,6 +96,7 @@ class MrimPlanner:
         print(' path planning method:', pp_method)
         print(' distance estimation method:', de_method)
         print(' sampling method:', self._path_planner['rrt/sampling/method'])
+        print(' sampling with stops:', self._sample_with_stops)
 
         ## | ----------------- initiate ROS publishers ---------------- |
         self.publisher_trajectory_1 = rospy.Publisher("~trajectory_1_out", TrajectoryReference, queue_size=1, latch=True)
