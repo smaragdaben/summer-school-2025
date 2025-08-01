@@ -25,7 +25,13 @@ path_planner:
 
   # A* method parameters
   astar:
-    grid_resolution: 0.3 # (m)
+    grid_resolution: 0.4 # (m)
+    # Notes by Haizhou Zhang, Aug.1: 
+    # if grid_resolution is too small, the A* algorithm will take a long time to compute the path, so longer solution time
+    # if grid_resolution is too large, the path will be not smooth and precise enough, tend to collide
+    # so far, 0.3 seems to be a good value, if 0.4, they collide a lot
+    # but need more tuning after we modify the other algorithms
+
 
 # Parameters for path smoothing
 path_smoothing:
