@@ -129,7 +129,6 @@ class RRT:
         st, en = [self.start[i] for i in range(3)], [self.end[i] for i in range(3)]
         mean   = np.mean([st, en], axis=0)
         sigma  = np.std([st, en], axis=0)
-        print("START: {}, END: {}, SIGMA: {}, MEAN: {}", st, en, sigma, mean)
 
         # Inflate zero stddev
         for i in range(3):
