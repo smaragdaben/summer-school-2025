@@ -129,6 +129,7 @@ class RRT:
         st, en = [self.start[i] for i in range(3)], [self.end[i] for i in range(3)]
         mean   = np.mean([st, en], axis=0)
         sigma  = np.std([st, en], axis=0)
+        print("START: {}, END: {}, SIGMA: {}, MEAN: {}", st, en, sigma, mean)
 
         # Inflate zero stddev
         for i in range(3):
@@ -139,17 +140,16 @@ class RRT:
         point_valid = False
         while not point_valid:
 
-            raise NotImplementedError('[STUDENTS TODO] Implement Gaussian sampling in RRT (Informed RRT) to speed up the process and narrow the paths.')
+            # raise NotImplementedError('[STUDENTS TODO] Implement Gaussian sampling in RRT (Informed RRT) to speed up the process and narrow the paths.')
             # Tips:
             #  - sample from Normal distribution: use numpy.random.normal (https://numpy.org/doc/stable/reference/random/generated/numpy.random.normal.html)
             #  - to prevent deadlocks when sampling continuously, increase the sampling space by inflating the standard deviation of the gaussian sampling
 
             # STUDENTS TODO: Sample XYZ in the state space
-            x = 0
-            y = 0
-            z = 0
-
-            point = Point(x, y, z)
+            x = np.random.normal(mean[0], sigma[0] + sigma_offset)
+            y = np.random.normal(mean[1], sigma[1] + sigma_offset)
+            z = np.random.normal(mean[2], sigma[2] + sigma_offset)
+            point = Point(x,y,z)
             point_valid = self.pointValid(point)
 
         return point.asTuple()
@@ -233,14 +233,15 @@ class RRT:
         neighborhood_points = self.getPointsInNeighborhood(point, neighborhood)
         for neighbor in neighborhood_points:
 
-            raise NotImplementedError('[STUDENTS TODO] Getting node parents in RRT* not implemented. You have to finish it.')
+            # raise NotImplementedError('[STUDENTS TODO] Getting node parents in RRT* not implemented. You have to finish it.')
             # Tips:
             #  - look for neighbor which when connected yields minimal path cost all the way back to the start
             #  - you might need functions 'self.tree.get_cost()' or 'distEuclidean()'
 
             # [STUDENTS TODO]: find a parent with optimal cost and fill these two variables
-            cost = float('inf') 
-            parent = closest_point
+            if cost > self.tree.get_cost(neighbor) + distEuclidean(neighbor, point):
+                parent = closest_point
+                cost   = self.tree.get_cost(neighbor) + distEuclidean(neighbor, point)
 
         return parent, cost
     # # #}
@@ -315,3 +316,4 @@ class RRT:
     # # #}
 
 # # #}
+
