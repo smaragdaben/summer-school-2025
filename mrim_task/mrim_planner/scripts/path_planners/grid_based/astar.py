@@ -71,8 +71,8 @@ class Node:
         a = self.pos[0] - self.goal[0]
         b = self.pos[1] - self.goal[1]
         c = self.pos[2] - self.goal[2]
-
-        raise NotImplementedError('[STUDENTS TODO] Heuristic function guiding the state space exploration not implemented. You have to finish it on your own.')
+        return sqrt(a * a + b * b + c * c)
+        # raise NotImplementedError('[STUDENTS TODO] Heuristic function guiding the state space exploration not implemented. You have to finish it on your own.')
 # # #}
 
 # # #{ class AStar
@@ -98,20 +98,22 @@ class AStar():
         if len(path) <= 2:
             return path
 
-        raise NotImplementedError('[STUDENTS TODO] A*: path straightening is not finished. Finish it on your own.')
+        # raise NotImplementedError('[STUDENTS TODO] A*: path straightening is not finished. Finish it on your own.')
         # Tips:
         #  - divide the given path by a certain ratio and use this method recursively
 
-        if self.grid.obstacleBetween(pt1, pt2):
+        if not self.grid.obstacleBetween(pt1, pt2):
+            # No obstacle in between – keep only endpoints
+            return [pt1, pt2]
 
-            # [STUDENTS TODO] Replace seg1 and seg2 variables effectively
-            seg1 = path[:1]
-            seg2 = path[1:]
+        # Otherwise split path and recurse ----------------------------
+        mid_idx = len(path) // 2  # integer division, left‑biased when even
+        left_segment = self.halveAndTest(path[:mid_idx + 1])  # include mid
+        right_segment = self.halveAndTest(path[mid_idx:])     # include mid
 
-            seg1.extend(seg2)
-            return seg1
-        
-        return [pt1, pt2]
+        # Merge, dropping the duplicate middle point once
+        return left_segment[:-1] + right_segment
+
 
     def generatePath(self, m_start, m_goal):
         
