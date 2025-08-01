@@ -164,6 +164,7 @@ class TrajectoryUtils():
         wps_interp = []
 
         idx = 0
+        
         while idx != (len(waypoints) - 1):
             g_from  = waypoints[idx]
 
@@ -192,6 +193,8 @@ class TrajectoryUtils():
             # include start node
             wps_interp.append(subtraj[0])
 
+            dist_from_start = 0.0
+
             # interpolate headings
             for i in range(1, len(subtraj) - 1):
 
@@ -206,7 +209,21 @@ class TrajectoryUtils():
                 #  - Use distEuclidean() from utils.py to compute distances between points.
 
                 # [STUDENTS TODO] Change variable 'desired_heading', nothing else
-                desired_heading = waypoints[0].heading
+                # desired_heading = waypoints[0].heading
+
+                # Accumulate the distance traveled along the subtrajectory
+                dist_from_start += distEuclidean(subtraj_point_0, subtraj_point_1)
+
+                # Calculate the interpolation factor (alpha) as the ratio of
+                # distance traveled to the total length.
+                alpha = dist_from_start / subtraj_len if subtraj_len > 1e-6 else 0.0
+                # alpha = subtraj_len
+
+                # Calculate the desired heading by applying the alpha to the total heading change
+                # and adding it to the start heading. Then, wrap the angle.
+                desired_heading = wrapAngle(hdg_from + alpha * delta_heading)
+                print("Interpolating heading from", hdg_from, "to", desired_heading, "with alpha =", alpha)
+
 
                 # replace heading
                 current_heading   = desired_heading

@@ -221,11 +221,17 @@ class MrimPlanner:
             # sample trajectory through its waypoints
             print("[SAMPLING TRAJECTORY]")
             trajectory = trajectory_utils.sampleTrajectoryThroughWaypoints(trajectory, with_stops=self._sample_with_stops,\
-                                                                           smooth_path=True, smoothing_la_dist=self._smoothing_distance,\
+                                                                           smooth_path=True
+                                                                           , smoothing_la_dist=self._smoothing_distance,\
                                                                            smoothing_sampling_step=self._smoothing_sampling_step,\
                                                                            velocity_limits=constraints_velocity,
                                                                            acceleration_limits=constraints_acceleration)
-
+            # Print the first 3 trajectory poses
+            print('Trajectory poses for robot with ID: {:d}'.format(problem.robot_ids[r]))
+            for i in range(min(15, len(trajectory.getPoses()))):
+                pose = trajectory.getPoses()[i]
+                print('   [{:d}]:'.format(i), pose)
+                
             if trajectory is None:
                 rospy.logerr('Unable to sample trajectory through waypoints. Read the log output to find out why.')
                 rospy.signal_shutdown('Unable to sample trajectory through waypoints. Read the log output to find out why.');
