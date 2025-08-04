@@ -222,7 +222,7 @@ class TrajectoryUtils():
                 # Calculate the desired heading by applying the alpha to the total heading change
                 # and adding it to the start heading. Then, wrap the angle.
                 desired_heading = wrapAngle(hdg_from + alpha * delta_heading)
-                print("Interpolating heading from", hdg_from, "to", desired_heading, "with alpha =", alpha)
+                # print("Interpolating heading from", hdg_from, "to", desired_heading, "with alpha =", alpha)
 
 
                 # replace heading
@@ -478,12 +478,8 @@ class TrajectoryUtils():
 
             samples = [] # [STUDENTS TODO] Fill this variable with trajectory samples
             x = np.arange(0, toppra_trajectory.duration + sampling_step, sampling_step)
-            print("DEBUG")
-            print(toppra_trajectory.duration-1)
-            print(sampling_step)
-            print(x)
+ 
             samples = toppra_trajectory(x)
-            print(samples)
 
 
             # Convert to Trajectory class

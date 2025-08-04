@@ -99,6 +99,7 @@ class TSPSolver3D():
         n              = len(viewpoints)
         self.distances = np.zeros((n, n))
         self.paths = {}
+        self.paths_corr = {}
 
         # find path between each pair of goals (a, b)
         for a in range(n):
@@ -116,10 +117,12 @@ class TSPSolver3D():
                 g2 = viewpoints[b].pose
 
                 # estimate distances between the viewpoints
-                path, distance = self.compute_path(g1, g2, path_planner, path_planner['distance_estimation_method'])
+                path, distance, path_corr = self.compute_path(g1, g2, path_planner, path_planner['distance_estimation_method'])
 
                 # store paths/distances in matrices
                 self.paths[(a, b)]   = path
+                if path_corr : 
+                    self.paths_corr[(a, b)] = path
                 self.distances[a][b] = distance
 
         # compute TSP tour
@@ -131,7 +134,7 @@ class TSPSolver3D():
 
     # # #{ compute_path()
 
-    def compute_path(self, p_from, p_to, path_planner, path_planner_method):
+    def compute_path(self, p_from, p_to, path_planner, path_planner_method, estimate=True):
         '''
         Computes collision-free path (if feasible) between two points
 
@@ -146,14 +149,34 @@ class TSPSolver3D():
             distance (float): length of path
         '''
         path, distance = [], float('inf')
+        method = path_planner_method
+        distance = distEuclidean(p_from, p_to)
+        p_middle = Pose((p_from.point.x + p_to.point.x) / 2, (p_from.point.y + p_to.point.y) / 2, (p_from.point.z + p_to.point.z) / 2, 0)
+        dist_mid, _ = path_planner['obstacles_kdtree'].query(p_middle.asList()[:3], k=1)
+        dist_from, _ = path_planner["obstacles_kdtree"].query(p_from.asList()[:3], k=1)
+        dist_to, _ = path_planner["obstacles_kdtree"].query(p_to.asList()[:3], k=1)
+
+        if estimate:
+            if distance > 20 : 
+                # print("Distance is too large, using euclidean state estimation instead")
+                # print("changing to eucldea")
+                method = "euclidean"
+            else :
+                if dist_mid > path_planner['safety_distance'] and dist_from > path_planner['safety_distance'] and dist_to > path_planner['safety_distance']:
+                    # print("Using euclidean state estimation instead")
+                    method = 'euclidean'
+
+            if path_planner_method == "aster" : 
+                print("path planner is astar")
+
 
         # Use Euclidean metric
-        if path_planner is None or path_planner_method == 'euclidean':
+        if path_planner is None or method == 'euclidean':
 
-            path, distance = [p_from, p_to], distEuclidean(p_from, p_to)
+            path = [p_from, p_to]
 
         # Plan with A*
-        elif path_planner_method == 'astar':
+        elif method == 'astar':
 
             astar = AStar(path_planner['grid'], path_planner['safety_distance'], path_planner['timeout'], path_planner['straighten'])
             path, distance = astar.generatePath(p_from.asList(), p_to.asList())
@@ -161,10 +184,10 @@ class TSPSolver3D():
                 path = [Pose(p[0], p[1], p[2], p[3]) for p in path]
 
         # Plan with RRT/RRT*
-        elif path_planner_method.startswith('rrt'):
+        elif method.startswith('rrt'):
 
             rrt = RRT()
-            path, distance = rrt.generatePath(p_from.asList(), p_to.asList(), path_planner, rrtstar=(path_planner_method == 'rrtstar'), straighten=path_planner['straighten'])
+            path, distance = rrt.generatePath(p_from.asList(), p_to.asList(), path_planner, rrtstar=(method == 'rrtstar'), straighten=path_planner['straighten'])
             if path:
                 path = [Pose(p[0], p[1], p[2], p[3]) for p in path]
 
@@ -173,7 +196,12 @@ class TSPSolver3D():
             rospy.signal_shutdown('No path found. Shutting down.');
             exit(-2)
 
-        return path, distance
+        if method == "euclidean" :
+            path_corr = False
+        else :
+            path_corr = True
+
+        return path, distance, path_corr
 
     # # #}
 
@@ -205,12 +233,15 @@ class TSPSolver3D():
                 a_idx = 0
                 b_idx = 1
 
-            # if the paths are already computed
+            # # if the paths are already computed
             if path_planner['distance_estimation_method'] == path_planner['path_planning_method']:
-                actual_path = self.paths[(a_idx, b_idx)]
+                if (a_idx, b_idx) in self.paths_corr:
+                    actual_path = self.paths_corr[(a_idx, b_idx)]
+                else :
+                    actual_path, _, _ = self.compute_path(viewpoints[a_idx].pose, viewpoints[b_idx].pose, path_planner, path_planner['path_planning_method'], estimate=False)
             # if the path planning and distance estimation methods differ, we need to compute the path
             else:
-                actual_path, _ = self.compute_path(viewpoints[a_idx].pose, viewpoints[b_idx].pose, path_planner, path_planner['path_planning_method'])
+                actual_path, _ ,_= self.compute_path(viewpoints[a_idx].pose, viewpoints[b_idx].pose, path_planner, path_planner['path_planning_method'], estimate=False)
 
             # join paths
             path = path + actual_path[:-1]

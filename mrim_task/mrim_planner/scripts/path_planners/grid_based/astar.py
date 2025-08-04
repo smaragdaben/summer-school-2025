@@ -103,10 +103,12 @@ class AStar():
         #  - divide the given path by a certain ratio and use this method recursively
         
         if self.grid.obstacleBetween(pt1, pt2):
-
+            # print("theres obstacle")
             mid = len(path) // 2
             seg1 = self.halveAndTest(path[:mid+1])  
             seg2 = self.halveAndTest(path[mid:])    
+            res =  seg1[:-1] + seg2 
+            # print("length of path: ",len(path), " length of new path ", len(res))
             return seg1[:-1] + seg2 
         
         return [pt1, pt2]
