@@ -297,18 +297,30 @@ class TSPSolver3D():
             # [STUDENTS TODO]: fill 1D list 'labels' of size len(viewpoints) with indices of the robots
             labels = new_labels.tolist()
 
+        elif method == 'kmeans2':
+            clusters = []
+            
+            positions = np.array([vp.pose.point.asList() for vp in viewpoints])
+
+            model = KMeans(n_clusters=k, random_state=0, n_init=10)
+            labels = model.fit_predict(positions)
+
+            # Group viewpoints into clusters directly by KMeans labels (no reassignment based on drone start)
+            for r in range(k):
+                clusters.append([viewpoints[i] for i in range(len(labels)) if labels[i] == r])
+        
         ## | -------------------- Random clustering ------------------- |
         else:
             labels = [randint(0, k - 1) for vp in viewpoints]
 
-        # Store as clusters (2D array of viewpoints)
-        clusters = []
-        for r in range(k):
-            clusters.append([])
+            # Store as clusters (2D array of viewpoints)
+            clusters = []
+            for r in range(k):
+                clusters.append([])
 
-            for label in range(len(labels)):
-                if labels[label] == r:
-                    clusters[r].append(viewpoints[label])
+                for label in range(len(labels)):
+                    if labels[label] == r:
+                        clusters[r].append(viewpoints[label])
 
         return clusters
 
